@@ -39,7 +39,8 @@ data_2056 <- data_2056 |>
   ungroup()
 
 data_2056 <- data_2056 |>
-  mutate(static = stepMean < mean(stepMean, na.rm = TRUE))
+  mutate(static = stepMean < 5, na.rm = TRUE)
+         #< mean(stepMean, na.rm = TRUE))
 
 # Visualize segmented trajectories
 
@@ -52,3 +53,30 @@ ggplot(data_2056, aes(x = longitude, y = latitude, colour = static)) +
 
 #Segment-based analysis
 
+rle_id <- function(vec) {
+  x <- rle(vec)$lengths
+  as.factor(rep(seq_along(x), times = x))
+}
+
+data_2056 <- data_2056 |>
+  mutate(segment_id = rle_id(static)) |>
+  filter(static == FALSE)
+
+
+#You can use the newly created function rle_id to assign unique IDs to subtrajectories 
+#(as shown below). Visualize the moving segments by colourizing them by segment_ID. 
+#Then use segment_ID as a grouping variable to determine the segments duration and 
+#remove short segments (e.g. segments with a duration < 5 Minutes)
+#mutate, filter out with stepmean
+
+library("ggplot2")
+ggplot(data_2056, aes(x = longitude, y = latitude, colour = segment_id)) +
+  geom_point()+
+  geom_path()+
+  coord_equal()+
+  theme(legend.position = "none")
+
+
+#Similarity measures
+#explore the trajectories first and get an idea on how the pedestrians moved.
+data <- read_delim("pedestrian.csv", ",")
