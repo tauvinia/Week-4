@@ -79,4 +79,17 @@ ggplot(data_2056, aes(x = longitude, y = latitude, colour = segment_id)) +
 
 #Similarity measures
 #explore the trajectories first and get an idea on how the pedestrians moved.
-data <- read_delim("pedestrian.csv", ",")
+pedestrian <- read_delim("pedestrian.csv", ",")
+
+ggplot(pedestrian, aes(E,N, color = DatetimeUTC)) +
+  geom_point()+
+  geom_path()+
+  coord_fixed()+
+  scale_color_datetime(low= "blue", high = "red")+
+  guides(color = guide_colorbar (title.position =  "top", title.hjust = .5, barwidth = unit(20, "lines"), barheight = unit (.5, "lines")))+
+  theme (legend.position = "bottom")+
+  g
+
+
+
+
